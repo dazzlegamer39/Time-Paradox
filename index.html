@@ -11,36 +11,29 @@
 <body>
     <header>
         <h1>TIME PARADOX</h1>
-        <p>Causality Engine v1.0</p>
+        <p>AI Causality Engine v2.0</p>
     </header>
 
     <main id="game-container">
         <section id="mission-briefing">
-            <h2>Mission 01: The Archduke's Wrong Turn</h2>
-            <p><strong>Goal:</strong> Prevent the outbreak of WWI in 1914 without causing a temporal cascade.</p>
-            <p><strong>Baseline:</strong> Archduke Franz Ferdinand's driver takes a wrong turn into Sarajevo.</p>
+            <h2>Sandbox Mode: Infinite Anomalies</h2>
+            <p><strong>Goal:</strong> Alter history. The universe is yours to break.</p>
         </section>
 
         <section id="intervention-panel">
             <h3>Configure Intervention</h3>
             
-            <label for="time-select">WHEN (Era):</label>
-            <select id="time-select">
-                <option value="100BC">100 BC - Roman Republic</option>
-                <option value="1850">1850 - Victorian London</option>
-                <option value="1898">1898 - Austro-Hungarian Empire</option>
-                <option value="1914">1914 - Sarajevo</option>
-            </select>
+            <label for="input-era">WHEN (Era or Year):</label>
+            <input type="text" id="input-era" placeholder="e.g., 65 Million BC, 1999, The Renaissance" />
 
-            <label for="action-select">WHAT (Action):</label>
-            <select id="action-select">
-                <option value="steam_blueprint">Gift Steam Turbine Blueprint</option>
-                <option value="metallurgy">Deliver Modern Metallurgy</option>
-                <option value="swap_map">Swap Street Map</option>
-                <option value="distract">Distract Driver</option>
-            </select>
+            <label for="input-location">WHERE (Location or Person):</label>
+            <input type="text" id="input-location" placeholder="e.g., Chicxulub Crater, Steve Jobs' Garage" />
+
+            <label for="input-action">WHAT (Your Action):</label>
+            <input type="text" id="input-action" placeholder="e.g., Deflect the asteroid, Hand out smartphones" />
 
             <button id="simulate-btn">Inject Tweak & Simulate</button>
+            <p id="loading-text" class="hidden">Calculating temporal ripples...</p>
         </section>
 
         <section id="result-panel" class="hidden">
