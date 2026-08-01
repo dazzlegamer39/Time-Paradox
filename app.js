@@ -7,7 +7,8 @@ if ('serviceWorker' in navigator) {
 
 // ⚠️ IMPORTANT: Paste your secure Cloudflare proxy URL below! 
 // It should look something like: 'https://time-paradox-proxy.dazzlegamer39.workers.dev'
-const API_URL = 'PASTE_YOUR_CLOUDFLARE_WORKER_URL_HERE';
+const API_URL = 'https://time-paradox-proxy.dazzlegamer39.workers.dev';
+
 
 // UI Elements
 const simulateBtn = document.getElementById('simulate-btn');
