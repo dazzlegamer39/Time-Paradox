@@ -48,7 +48,8 @@ section {
 
 label { display: block; margin-top: 15px; font-weight: bold; color: var(--accent); }
 
-select, button {
+/* Updated for text inputs */
+input[type="text"], button {
     display: block;
     width: 100%;
     margin: 8px 0 20px;
@@ -62,7 +63,10 @@ select, button {
     appearance: none;
 }
 
-select:focus { outline: none; border-color: var(--accent); }
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--accent);
+}
 
 button {
     background: var(--accent);
@@ -81,3 +85,10 @@ button:active { background: #00ccaa; transform: scale(0.98); }
 .status-success { color: var(--success); font-weight: bold; margin-top: 15px; border-top: 1px dashed var(--border); padding-top: 10px; }
 .status-failed { color: var(--danger); font-weight: bold; margin-top: 15px; border-top: 1px dashed var(--border); padding-top: 10px; }
 .status-paradox { color: #ff00ff; font-weight: bold; margin-top: 15px; border-top: 1px dashed var(--border); padding-top: 10px; }
+
+#loading-text {
+    color: var(--accent);
+    text-align: center;
+    font-style: italic;
+    margin-top: 10px;
+}
