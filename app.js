@@ -6,8 +6,8 @@ if ('serviceWorker' in navigator) {
 }
 
 // ⚠️ IMPORTANT: Paste your secure Cloudflare proxy URL below! 
-// It should look something like: 'https://time-paradox-proxy.yourusername.workers.dev'
-const API_URL = 'https://time-paradox-proxy.dazzlegamer39.workers.dev';
+// It should look something like: 'https://time-paradox-proxy.dazzlegamer39.workers.dev'
+const API_URL = 'PASTE_YOUR_CLOUDFLARE_WORKER_URL_HERE';
 
 // UI Elements
 const simulateBtn = document.getElementById('simulate-btn');
@@ -52,6 +52,11 @@ simulateBtn.addEventListener('click', async () => {
 
         const data = await response.json();
         
+        // NEW: Check if Google sent back an error instead of a timeline!
+        if (data.error) {
+            throw new Error(`Google AI: ${data.error.message}`);
+        }
+        
         // Clean and parse the JSON response from Gemini
         let rawText = data.candidates[0].content.parts[0].text;
         rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
@@ -69,6 +74,7 @@ simulateBtn.addEventListener('click', async () => {
         `;
     } catch (error) {
         console.error("API Error:", error);
+        // This will now print the exact reason it failed onto your screen
         outcomeDiv.innerHTML = `<p class="status-failed">System Error: ${error.message}</p>`;
     }
 
@@ -85,3 +91,4 @@ resetBtn.addEventListener('click', () => {
     document.getElementById('input-location').value = '';
     document.getElementById('input-action').value = '';
 });
+
