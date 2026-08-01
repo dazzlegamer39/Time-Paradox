@@ -69,7 +69,7 @@ simulateBtn.addEventListener('click', async () => {
         `;
     } catch (error) {
         console.error("API Error:", error);
-        outcomeDiv.innerHTML = `<p class="status-failed">System Error: Timeline connection lost. Check your Cloudflare Worker URL and setup.</p>`;
+        outcomeDiv.innerHTML = `<p class="status-failed">System Error: ${error.message}</p>`;
     }
 
     loadingText.classList.add('hidden');
