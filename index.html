@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Time Paradox</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#00ffcc">
+</head>
+<body>
+    <header>
+        <h1>TIME PARADOX</h1>
+        <p>Causality Engine v1.0</p>
+    </header>
+
+    <main id="game-container">
+        <section id="mission-briefing">
+            <h2>Mission 01: The Archduke's Wrong Turn</h2>
+            <p><strong>Goal:</strong> Prevent the outbreak of WWI in 1914 without causing a temporal cascade.</p>
+            <p><strong>Baseline:</strong> Archduke Franz Ferdinand's driver takes a wrong turn into Sarajevo.</p>
+        </section>
+
+        <section id="intervention-panel">
+            <h3>Configure Intervention</h3>
+            
+            <label for="time-select">WHEN (Era):</label>
+            <select id="time-select">
+                <option value="100BC">100 BC - Roman Republic</option>
+                <option value="1850">1850 - Victorian London</option>
+                <option value="1898">1898 - Austro-Hungarian Empire</option>
+                <option value="1914">1914 - Sarajevo</option>
+            </select>
+
+            <label for="action-select">WHAT (Action):</label>
+            <select id="action-select">
+                <option value="steam_blueprint">Gift Steam Turbine Blueprint</option>
+                <option value="metallurgy">Deliver Modern Metallurgy</option>
+                <option value="swap_map">Swap Street Map</option>
+                <option value="distract">Distract Driver</option>
+            </select>
+
+            <button id="simulate-btn">Inject Tweak & Simulate</button>
+        </section>
+
+        <section id="result-panel" class="hidden">
+            <h3>Simulation Result</h3>
+            <div id="timeline-outcome"></div>
+            <button id="reset-btn">Reset Timeline</button>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
