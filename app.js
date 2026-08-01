@@ -1,11 +1,14 @@
 // Register Service Worker for PWA Offline Support
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
+        // The './' ensures it registers in the GitHub Pages repo folder
         navigator.serviceWorker.register('./sw.js')
             .then(reg => console.log('Service Worker Registered!', reg.scope))
             .catch(err => console.error('Service Worker Registration Failed!', err));
     });
 }
+
+// ... rest of your game logic below ...
 
 // Game Logic
 const simulateBtn = document.getElementById('simulate-btn');
