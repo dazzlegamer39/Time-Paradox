@@ -6,9 +6,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // ⚠️ IMPORTANT: Paste your secure Cloudflare proxy URL below! 
-// It should look something like: 'https://time-paradox-proxy.dazzlegamer39.workers.dev'
 const API_URL = 'https://time-paradox-proxy.dazzlegamer39.workers.dev';
-
 
 // UI Elements
 const simulateBtn = document.getElementById('simulate-btn');
@@ -54,6 +52,7 @@ caseSelector.addEventListener('change', () => {
     }
 });
 
+// Run the Simulation
 simulateBtn.addEventListener('click', async () => {
     const selectedCase = caseSelector.value;
     const era = document.getElementById('input-era').value || 'Unknown Time';
@@ -112,10 +111,8 @@ simulateBtn.addEventListener('click', async () => {
             })
         });
 
-        // 1. Read the raw text BEFORE trying to parse it as JSON
         const rawResponse = await response.text();
         
-        // 2. Try to turn it into JSON
         let data;
         try {
             data = JSON.parse(rawResponse);
@@ -127,11 +124,10 @@ simulateBtn.addEventListener('click', async () => {
             throw new Error(`AI Error: ${data.error.message}`);
         }
         
-        // 4. Clean and parse the actual timeline text
         let timelineText;
         if (data.candidates) { // Gemini Format
              timelineText = data.candidates[0].content.parts[0].text;
-        } else if (data.choices) { // Groq Format fallback if Cloudflare didn't repackage
+        } else if (data.choices) { // Groq Format fallback
              timelineText = data.choices[0].message.content;
         } else {
             throw new Error("Unexpected AI response format.");
@@ -140,7 +136,6 @@ simulateBtn.addEventListener('click', async () => {
         timelineText = timelineText.replace(/```json/g, '').replace(/```/g, '').trim();
         const outcome = JSON.parse(timelineText);
 
-        // Map status to CSS classes
         let statusClass = 'status-failed';
         if (outcome.status === 'SUCCESS' || outcome.status === 'MISSION ACCOMPLISHED') statusClass = 'status-success';
         if (outcome.status === 'PARADOX') statusClass = 'status-paradox';
@@ -161,55 +156,17 @@ simulateBtn.addEventListener('click', async () => {
     resultPanel.classList.remove('hidden');
 });
 
-
-    try {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: promptText }] }]
-            })
-        });
-
-        const data = await response.json();
-        
-        // NEW: Check if Google sent back an error instead of a timeline!
-        if (data.error) {
-            throw new Error(`Google AI: ${data.error.message}`);
-        }
-        
-        // Clean and parse the JSON response from Gemini
-        let rawText = data.candidates[0].content.parts[0].text;
-        rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
-        const outcome = JSON.parse(rawText);
-
-        // Map status to CSS classes
-        let statusClass = 'status-failed';
-        if (outcome.status === 'SUCCESS') statusClass = 'status-success';
-        if (outcome.status === 'PARADOX') statusClass = 'status-paradox';
-
-        outcomeDiv.innerHTML = `
-            <p><strong>Outcome: ${outcome.outcomeTitle}</strong></p>
-            <p>${outcome.description}</p>
-            <p class="${statusClass}">STATUS: ${outcome.status}</p>
-        `;
-    } catch (error) {
-        console.error("API Error:", error);
-        // This will now print the exact reason it failed onto your screen
-        outcomeDiv.innerHTML = `<p class="status-failed">System Error: ${error.message}</p>`;
-    }
-
-    loadingText.classList.add('hidden');
-    simulateBtn.classList.remove('hidden');
-    interventionPanel.classList.add('hidden');
-    resultPanel.classList.remove('hidden');
-});
-
+// Reset the Game
 resetBtn.addEventListener('click', () => {
     resultPanel.classList.add('hidden');
     interventionPanel.classList.remove('hidden');
-    document.getElementById('input-era').value = '';
-    document.getElementById('input-location').value = '';
+    
+    // Only clear the action if it's a Case File. Clear everything if Custom.
+    const selectedCase = document.getElementById('case-file-selector').value;
+    if (selectedCase === "custom") {
+        document.getElementById('input-era').value = '';
+        document.getElementById('input-location').value = '';
+    }
     document.getElementById('input-action').value = '';
 });
-
+            
