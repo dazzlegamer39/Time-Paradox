@@ -19,22 +19,22 @@
             <h2>Sandbox Mode: Infinite Anomalies</h2>
             <p><strong>Goal:</strong> Alter history. The universe is yours to break.</p>
         </section>
+        
+<section id="intervention-panel">
+    <h2>Select Case File</h2>
+    <select id="case-file-selector" class="input-field">
+        <option value="custom">Chaos Sandbox (Custom Era)</option>
+        <option value="case-01">Case #01: The Archduke's Wrong Turn (1914)</option>
+        <option value="case-02">Case #02: The Apple and the Gravity (1666)</option>
+    </select>
 
-        <section id="intervention-panel">
-            <h3>Configure Intervention</h3>
-            
-            <label for="input-era">WHEN (Era or Year):</label>
-            <input type="text" id="input-era" placeholder="e.g., 65 Million BC, 1999, The Renaissance" />
-
-            <label for="input-location">WHERE (Location or Person):</label>
-            <input type="text" id="input-location" placeholder="e.g., Chicxulub Crater, Steve Jobs' Garage" />
-
-            <label for="input-action">WHAT (Your Action):</label>
-            <input type="text" id="input-action" placeholder="e.g., Deflect the asteroid, Hand out smartphones" />
-
-            <button id="simulate-btn">Inject Tweak & Simulate</button>
-            <p id="loading-text" class="hidden">Calculating temporal ripples...</p>
-        </section>
+    <h2>Chronos Intervention</h2>
+    <input type="text" id="input-era" placeholder="WHEN: e.g., 44 BC Rome" class="input-field">
+    <input type="text" id="input-location" placeholder="WHERE/WHO: e.g., The Senate Floor" class="input-field">
+    <input type="text" id="input-action" placeholder="WHAT: e.g., Swap the daggers for rubber props" class="input-field">
+    
+    <button id="simulate-btn">Simulate Timeline</button>
+</section>
 
         <section id="result-panel" class="hidden">
             <h3>Simulation Result</h3>
