@@ -19,6 +19,13 @@
             <h2>Sandbox Mode: Infinite Anomalies</h2>
             <p><strong>Goal:</strong> Alter history. The universe is yours to break.</p>
         </section>
+
+    <!-- Add this button above your intervention panel -->
+    <button id="open-codex-btn" class="secondary-btn">📖 View Timeline Codex</button>
+
+
+    <!-- Add this entirely new section at the bottom -->
+        
         
 <section id="intervention-panel">
     <h2>Select Case File</h2>
@@ -40,6 +47,16 @@
             <h3>Simulation Result</h3>
             <div id="timeline-outcome"></div>
             <button id="reset-btn">Reset Timeline</button>
+        </section>
+
+        <section id="codex-panel" class="hidden">
+        <h2>Timeline Codex</h2>
+        <p>A record of all your historical alterations.</p>
+        <div id="codex-list">
+            <!-- Saved timelines will appear here -->
+        </div>
+        <button id="close-codex-btn">Back to Simulator</button>
+        <button id="clear-codex-btn" style="background-color: #777; margin-top: 10px;">Clear History</button>
         </section>
     </main>
 
