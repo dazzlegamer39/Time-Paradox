@@ -117,7 +117,7 @@ simulateBtn.addEventListener('click', async () => {
         try {
             data = JSON.parse(rawResponse);
         } catch (parseError) {
-            throw new Error(`Proxy returned HTML instead of data. Check your API_URL! It returned: ${rawResponse.substring(0, 50)}...`);
+            throw new Error("Proxy returned HTML instead of data. Check your API_URL!");
         }
 
         if (data.error) {
@@ -125,16 +125,26 @@ simulateBtn.addEventListener('click', async () => {
         }
         
         let timelineText;
-        if (data.candidates) { // Gemini Format
+        if (data.candidates) { 
              timelineText = data.candidates[0].content.parts[0].text;
-        } else if (data.choices) { // Groq Format fallback
-             timelineText = data.choices[0].message.content;
+        } else if (data.choices) { 
+             timeline,Text = data.choices[0].message.content;
         } else {
             throw new Error("Unexpected AI response format.");
         }
 
-        timelineText = timelineText.replace(/```json/g, '').replace(/```/g, '').trim();
-        const outcome = JSON.parse(timelineText);
+        // ==========================================
+        // NEW BULLETPROOF JSON EXTRACTOR
+        // ==========================================
+        const startIndex = timelineText.indexOf('{');
+        const endIndex = timelineText.lastIndexOf('}');
+        
+        if (startIndex === -1 || endIndex === -1) {
+            throw new Error("The AI didn't return a proper timeline format. Please try again!");
+        }
+        
+        const cleanJsonString = timelineText.substring(startIndex, endIndex + 1);
+        const outcome = JSON.parse(cleanJsonString);
 
         let statusClass = 'status-failed';
         if (outcome.status === 'SUCCESS' || outcome.status === 'MISSION ACCOMPLISHED') statusClass = 'status-success';
@@ -147,6 +157,7 @@ simulateBtn.addEventListener('click', async () => {
         `;
     } catch (error) {
         console.error("API Error:", error);
+        // If there's an error, it will now visibly print on your screen in red text.
         outcomeDiv.innerHTML = `<p class="status-failed">System Error: ${error.message}</p>`;
     }
 
@@ -169,4 +180,4 @@ resetBtn.addEventListener('click', () => {
     }
     document.getElementById('input-action').value = '';
 });
-            
+                             
