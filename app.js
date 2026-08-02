@@ -59,8 +59,9 @@ simulateBtn.addEventListener('click', async () => {
     const location = document.getElementById('input-location').value || 'Unknown Place';
     const action = document.getElementById('input-action').value || 'Did nothing';
     
+    // Safely hide button and show loading text (if it exists)
     simulateBtn.classList.add('hidden');
-    loadingText.classList.remove('hidden');
+    if (loadingText) loadingText.classList.remove('hidden');
 
     let promptText = "";
 
@@ -128,13 +129,13 @@ simulateBtn.addEventListener('click', async () => {
         if (data.candidates) { 
              timelineText = data.candidates[0].content.parts[0].text;
         } else if (data.choices) { 
-             timeline,Text = data.choices[0].message.content;
+             timelineText = data.choices[0].message.content; // The typo is fixed here!
         } else {
             throw new Error("Unexpected AI response format.");
         }
 
         // ==========================================
-        // NEW BULLETPROOF JSON EXTRACTOR
+        // BULLETPROOF JSON EXTRACTOR
         // ==========================================
         const startIndex = timelineText.indexOf('{');
         const endIndex = timelineText.lastIndexOf('}');
@@ -157,11 +158,10 @@ simulateBtn.addEventListener('click', async () => {
         `;
     } catch (error) {
         console.error("API Error:", error);
-        // If there's an error, it will now visibly print on your screen in red text.
         outcomeDiv.innerHTML = `<p class="status-failed">System Error: ${error.message}</p>`;
     }
 
-    loadingText.classList.add('hidden');
+    if (loadingText) loadingText.classList.add('hidden');
     simulateBtn.classList.remove('hidden');
     interventionPanel.classList.add('hidden');
     resultPanel.classList.remove('hidden');
@@ -180,4 +180,3 @@ resetBtn.addEventListener('click', () => {
     }
     document.getElementById('input-action').value = '';
 });
-                             
