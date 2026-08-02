@@ -5,7 +5,6 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// ⚠️ IMPORTANT: Paste your secure Cloudflare proxy URL below! 
 const API_URL = 'https://time-paradox-proxy.dazzlegamer39.workers.dev';
 
 // UI Elements
@@ -15,6 +14,13 @@ const resultPanel = document.getElementById('result-panel');
 const outcomeDiv = document.getElementById('timeline-outcome');
 const interventionPanel = document.getElementById('intervention-panel');
 const loadingText = document.getElementById('loading-text');
+
+// Codex UI Elements
+const openCodexBtn = document.getElementById('open-codex-btn');
+const closeCodexBtn = document.getElementById('close-codex-btn');
+const clearCodexBtn = document.getElementById('clear-codex-btn');
+const codexPanel = document.getElementById('codex-panel');
+const codexList = document.getElementById('codex-list');
 
 // Define our Case Files
 const caseFiles = {
@@ -32,7 +38,86 @@ const caseFiles = {
     }
 };
 
-// Handle UI changes when a Case File is selected
+// ==========================================
+// CODEX (LOCAL STORAGE) LOGIC
+// ==========================================
+
+// Load saved timelines from the phone's storage
+function loadCodex() {
+    const saved = localStorage.getItem('timelineCodex');
+    return saved ? JSON.parse(saved) : [];
+}
+
+// Save a new timeline to storage
+function saveToCodex(outcomeData) {
+    const codex = loadCodex();
+    // Add a timestamp so we know when it was created
+    outcomeData.date = new Date().toLocaleDateString();
+    codex.unshift(outcomeData); // Add to the top of the list
+    localStorage.setItem('timelineCodex', JSON.stringify(codex));
+}
+
+// Draw the Codex on the screen
+function renderCodex() {
+    const codex = loadCodex();
+    codexList.innerHTML = ''; // Clear current list
+    
+    if (codex.length === 0) {
+        codexList.innerHTML = '<p>No timelines altered yet. Go break history!</p>';
+        return;
+    }
+
+    codex.forEach(entry => {
+        let statusClass = 'status-failed';
+        if (entry.status === 'SUCCESS' || entry.status === 'MISSION ACCOMPLISHED') statusClass = 'status-success';
+        if (entry.status === 'PARADOX') statusClass = 'status-paradox';
+
+        const entryDiv = document.createElement('div');
+        entryDiv.style.borderBottom = "1px solid #444";
+        entryDiv.style.paddingBottom = "10px";
+        entryDiv.style.marginBottom = "10px";
+        
+        entryDiv.innerHTML = `
+            <p><strong>${entry.outcomeTitle}</strong> <span style="font-size: 0.8em; color: #888;">(${entry.date})</span></p>
+            <p style="font-size: 0.9em;">${entry.description}</p>
+            <p class="${statusClass}" style="font-size: 0.8em;">STATUS: ${entry.status}</p>
+        `;
+        codexList.appendChild(entryDiv);
+    });
+}
+
+// Codex Button Listeners
+if (openCodexBtn) {
+    openCodexBtn.addEventListener('click', () => {
+        interventionPanel.classList.add('hidden');
+        resultPanel.classList.add('hidden');
+        openCodexBtn.classList.add('hidden');
+        codexPanel.classList.remove('hidden');
+        renderCodex();
+    });
+}
+
+if (closeCodexBtn) {
+    closeCodexBtn.addEventListener('click', () => {
+        codexPanel.classList.add('hidden');
+        interventionPanel.classList.remove('hidden');
+        openCodexBtn.classList.remove('hidden');
+    });
+}
+
+if (clearCodexBtn) {
+    clearCodexBtn.addEventListener('click', () => {
+        if (confirm("Are you sure you want to erase all saved timelines?")) {
+            localStorage.removeItem('timelineCodex');
+            renderCodex();
+        }
+    });
+}
+
+// ==========================================
+// SIMULATION LOGIC
+// ==========================================
+
 const caseSelector = document.getElementById('case-file-selector');
 const inputEra = document.getElementById('input-era');
 const inputLocation = document.getElementById('input-location');
@@ -47,25 +132,22 @@ caseSelector.addEventListener('change', () => {
     } else {
         inputEra.value = caseFiles[selectedCase].era;
         inputLocation.value = caseFiles[selectedCase].location;
-        inputEra.disabled = true; // Lock the WHEN/WHERE for Case Files
+        inputEra.disabled = true;
         inputLocation.disabled = true;
     }
 });
 
-// Run the Simulation
 simulateBtn.addEventListener('click', async () => {
     const selectedCase = caseSelector.value;
     const era = document.getElementById('input-era').value || 'Unknown Time';
     const location = document.getElementById('input-location').value || 'Unknown Place';
     const action = document.getElementById('input-action').value || 'Did nothing';
     
-    // Safely hide button and show loading text (if it exists)
     simulateBtn.classList.add('hidden');
     if (loadingText) loadingText.classList.remove('hidden');
 
     let promptText = "";
 
-    // Build the Prompt based on the mode
     if (selectedCase === "custom") {
         promptText = `
         You are the "Causality Engine" for a time travel game. The user has made a historical intervention.
@@ -129,14 +211,11 @@ simulateBtn.addEventListener('click', async () => {
         if (data.candidates) { 
              timelineText = data.candidates[0].content.parts[0].text;
         } else if (data.choices) { 
-             timelineText = data.choices[0].message.content; // The typo is fixed here!
+             timelineText = data.choices[0].message.content;
         } else {
             throw new Error("Unexpected AI response format.");
         }
 
-        // ==========================================
-        // BULLETPROOF JSON EXTRACTOR
-        // ==========================================
         const startIndex = timelineText.indexOf('{');
         const endIndex = timelineText.lastIndexOf('}');
         
@@ -146,6 +225,9 @@ simulateBtn.addEventListener('click', async () => {
         
         const cleanJsonString = timelineText.substring(startIndex, endIndex + 1);
         const outcome = JSON.parse(cleanJsonString);
+
+        // --- NEW: Save the successful outcome to the Codex! ---
+        saveToCodex(outcome);
 
         let statusClass = 'status-failed';
         if (outcome.status === 'SUCCESS' || outcome.status === 'MISSION ACCOMPLISHED') statusClass = 'status-success';
@@ -163,16 +245,16 @@ simulateBtn.addEventListener('click', async () => {
 
     if (loadingText) loadingText.classList.add('hidden');
     simulateBtn.classList.remove('hidden');
+    if (openCodexBtn) openCodexBtn.classList.add('hidden');
     interventionPanel.classList.add('hidden');
     resultPanel.classList.remove('hidden');
 });
 
-// Reset the Game
 resetBtn.addEventListener('click', () => {
     resultPanel.classList.add('hidden');
     interventionPanel.classList.remove('hidden');
+    if (openCodexBtn) openCodexBtn.classList.remove('hidden');
     
-    // Only clear the action if it's a Case File. Clear everything if Custom.
     const selectedCase = document.getElementById('case-file-selector').value;
     if (selectedCase === "custom") {
         document.getElementById('input-era').value = '';
@@ -180,3 +262,4 @@ resetBtn.addEventListener('click', () => {
     }
     document.getElementById('input-action').value = '';
 });
+        
